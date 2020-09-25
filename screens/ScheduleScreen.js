@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, ScrollView} from 'react-native';
 import CourseList from '../components/CourseList';
 import { NavigationContainer, NavigationHelpersContext } from '@react-navigation/native';
+import UserContext from '../UserContext'; //one or 2 dots??
+import CourseEditScreen from './CourseEditScreen';
 
 const ScheduleScreen = ({navigation}) => {
     const [schedule, setSchedule] = useState({title: '', courses: [] });
     const url = 'https://courses.cs.northwestern.edu/394/data/cs-courses.php';
 
+    const user = useContext(UserContext);
+    const canEdit = user && user.role === 'admin';
+
     const view = (course) => {
-        navigation.navigate('CourseDetailScreen', { course });
+        navigation.navigate(canEdit ? 'CourseEditScreen' : 'CourseDetailScreen', { course });
 };
 
   useEffect(() => {
