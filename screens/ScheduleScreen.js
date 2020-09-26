@@ -4,7 +4,7 @@ import CourseList from '../components/CourseList';
 import { NavigationContainer, NavigationHelpersContext } from '@react-navigation/native';
 import UserContext from '../UserContext'; //one or 2 dots??
 import CourseEditScreen from './CourseEditScreen';
-import { firebase } from '../firebase';
+import { firebase } from '../utils/firebase';
 
 const ScheduleScreen = ({navigation}) => {
     const [schedule, setSchedule] = useState({title: '', courses: [] });
