@@ -4,6 +4,7 @@ import CourseList from '../components/CourseList';
 import { NavigationContainer, NavigationHelpersContext } from '@react-navigation/native';
 import UserContext from '../UserContext'; //one or 2 dots??
 import CourseEditScreen from './CourseEditScreen';
+import { firebase } from '../firebase';
 
 const ScheduleScreen = ({navigation}) => {
     const [schedule, setSchedule] = useState({title: '', courses: [] });
@@ -17,13 +18,12 @@ const ScheduleScreen = ({navigation}) => {
 };
 
   useEffect(() => {
-    const fetchSchedule = async () => {
-      const response = await fetch(url);
-      if (!response.ok) throw response;
-      const json = await response.json();
-      setSchedule(json);
+    const db = firebase.database().ref();
+    const handleData = snap => {
+      if (snap.val()) setSchedule(fixCourses(snap.val()));
     }
-    fetchSchedule();
+    db.on('value', handleData, error => alert(error));
+    return () => {db.off('value', handleData); };
   }, []);
 
   return(
@@ -37,6 +37,12 @@ const ScheduleScreen = ({navigation}) => {
 const Banner = ({title}) => (
   <Text style={styles.bannerStyle}>{title || '[loading...]'}</Text>
 );
+
+const fixCourses = json => ({
+  ...json,
+  courses: Object.values(json.courses)
+});
+
 
 const styles = StyleSheet.create({
   container: {
